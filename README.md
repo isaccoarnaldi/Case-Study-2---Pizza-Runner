@@ -6,6 +6,7 @@
 ## 📚 Table of Contents
 - [Business Task](#business-task)
 - [Dataset](#dataset)
+- [Data Cleaning](#data-cleaning)
 - [Question and Solution](#question-and-solution)
 
 Please note that all the information regarding the case study has been sourced from the following link: [here](https://8weeksqlchallenge.com/case-study-2/). 
@@ -16,6 +17,123 @@ Please note that all the information regarding the case study has been sourced f
 Did you know that a whopping 115 million kilograms of pizza are consumed daily worldwide? (Well according to Wikipedia anyway…) Inspired by the concept of "80s Retro Styling and Pizza Is The Future!" on Instagram, Danny launched Pizza Runner. To secure funding for his Pizza Empire expansion, he "Uberized" pizza delivery, recruiting runners and developing a mobile app with funds from maxing out his credit card.
 
 ***
+
+## Dataset
+
+![Pizza Runner](https://github.com/katiehuangx/8-Week-SQL-Challenge/assets/81607668/78099a4e-4d0e-421f-a560-b72e4321f530)
+
+The dataset includes:
+
+- `runners`: This table displays the registration date for each new runner.
+
+- `customer_orders`: Captures customer pizza orders, with one row per pizza in the order. The pizza_id corresponds to the ordered pizza type, while exclusions are ingredient_id values to be removed, and extras are ingredient_id values to be added.
+
+- `runner_orders`: After orders are received, they are assigned to a runner. Some orders may be canceled. Pickup_time is the timestamp when the runner picks up pizzas from Pizza Runner headquarters. Distance and duration fields indicate the travel required for delivery.
+
+- `pizza_names`: Pizza Runner offers only two pizzas: Meat Lovers or Vegetarian.
+
+- `pizza_recipes`: Each pizza_id has a standard set of toppings used in the pizza recipe.
+
+- `pizza_toppings`: This table lists all topping_name values with their corresponding topping_id value.
+
+***
+
+## Data Cleaning
+
+### Table: customer_orders
+
+Looking at the `customer_orders` table below:
+- In the `exclusions` column, there are missing/blank spaces ' ' and null values. 
+- In the `extras` column, there are missing/blank spaces ' ' and null values.
+
+<img width="1063" alt="image" src="https://user-images.githubusercontent.com/81607668/129472388-86e60221-7107-4751-983f-4ab9d9ce75f0.png">
+
+To clean the table:
+- Create a temporary table with all the columns
+- Remove null values in the `exclusions` and `extras` columns and replace them with blank space ' '.
+
+````sql
+CREATE TEMP TABLE customer_orders_temp AS
+SELECT 
+  order_id, 
+  customer_id, 
+  pizza_id, 
+  CASE
+	  WHEN exclusions IS null OR exclusions LIKE 'null' THEN ' '
+	  ELSE exclusions
+	  END AS exclusions,
+  CASE
+	  WHEN extras IS NULL or extras LIKE 'null' THEN ' '
+	  ELSE extras
+	  END AS extras,
+	order_time
+FROM pizza_runner.customer_orders;
+`````
+
+The clean `customers_orders_temp` table now looks like the below and we will use this table to run all our queries.
+
+<img width="1058" alt="image" src="https://user-images.githubusercontent.com/81607668/129472551-fe3d90a0-1e8b-4f32-a2a7-2ecd3ac469ef.png">
+
+***
+
+## Table: runner_orders
+
+Looking at the `runner_orders` table below:
+- In the `exclusions` column, there are missing/ blank spaces ' ' and null values. 
+- In the `extras` column, there are missing/ blank spaces ' ' and null values
+
+<img width="1037" alt="image" src="https://user-images.githubusercontent.com/81607668/129472585-badae450-52d2-442e-9d50-e4d0d8fce83a.png">
+
+To clean the table:
+- In `pickup_time` column, remove nulls and replace with blank space ' '.
+- In `distance` column, remove "km" and nulls and replace them with blank space ' '.
+- In `duration` column, remove "minutes", "minute" and nulls and replace them with blank space ' '.
+- In `cancellation` column, remove NULL and null and and replace with blank space ' '.
+
+````sql
+CREATE TEMP TABLE runner_orders_temp AS
+SELECT 
+  order_id, 
+  runner_id,  
+  CASE
+	  WHEN pickup_time LIKE 'null' THEN ' '
+	  ELSE pickup_time
+	  END AS pickup_time,
+  CASE
+	  WHEN distance LIKE 'null' THEN ' '
+	  WHEN distance LIKE '%km' THEN TRIM('km' from distance)
+	  ELSE distance 
+    END AS distance,
+  CASE
+	  WHEN duration LIKE 'null' THEN ' '
+	  WHEN duration LIKE '%mins' THEN TRIM('mins' from duration)
+	  WHEN duration LIKE '%minute' THEN TRIM('minute' from duration)
+	  WHEN duration LIKE '%minutes' THEN TRIM('minutes' from duration)
+	  ELSE duration
+	  END AS duration,
+  CASE
+	  WHEN cancellation IS NULL or cancellation LIKE 'null' THEN ' '
+	  ELSE cancellation
+	  END AS cancellation
+FROM pizza_runner.runner_orders;
+````
+
+Then, we alter the `pickup_time`, `distance` and `duration` columns to the correct data type.
+
+````sql
+ALTER TABLE runner_orders_temp
+ALTER COLUMN pickup_time DATETIME,
+ALTER COLUMN distance FLOAT,
+ALTER COLUMN duration INT;
+````
+
+The clean `runner_orders_temp` table now looks like the one below and we will use this table to run all our queries.
+
+<img width="915" alt="image" src="https://user-images.githubusercontent.com/81607668/129472778-6403381d-6e30-4884-a011-737b1eff7379.png">
+
+***
+
+## Question and Solution
 
 # 🍕 A. Pizza Metrics
 
