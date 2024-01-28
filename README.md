@@ -335,7 +335,7 @@ ORDER BY 1
 
 #
 
-### 10.  What was the volume of orders for each day of the week?
+#### 10.  What was the volume of orders for each day of the week?
 
 ````sql
 SELECT TO_CHAR(order_time,'Day') as day_of_week,
@@ -463,7 +463,7 @@ GROUP BY c.customer_id;
 
 #
 
-### 5.  What was the difference between the longest and shortest delivery times for all orders?
+#### 5.  What was the difference between the longest and shortest delivery times for all orders?
 
 ````sql
 WITH cte AS(
@@ -522,7 +522,7 @@ ORDER BY 1, 5
 
 #
 
-### 7. What is the successful delivery percentage for each runner?
+#### 7. What is the successful delivery percentage for each runner?
 
 ````sql
 SELECT runner_id,
