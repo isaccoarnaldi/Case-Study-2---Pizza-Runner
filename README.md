@@ -135,7 +135,7 @@ The clean `runner_orders_temp` table now looks like the one below and we will us
 
 ## Question and Solution
 
-# A. Pizza Metrics
+### A. Pizza Metrics
 
 #### 1. How many pizzas were ordered?
 
@@ -355,7 +355,7 @@ ORDER BY 2
 
 ***
 
-# B. Runner and Customer Experience
+### B. Runner and Customer Experience
 
 #### 1. How many runners signed up for each 1 week period? (i.e. week starts `2021-01-01`)
 ````sql
@@ -548,7 +548,7 @@ ORDER BY 1
 
 ***
 
-# C. Ingredient Optimisation
+### C. Ingredient Optimisation
 
 #### 1. What are the standard ingredients for each pizza?
 
